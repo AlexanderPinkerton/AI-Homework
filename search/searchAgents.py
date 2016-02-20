@@ -277,6 +277,7 @@ class CornersProblem(search.SearchProblem):
         """
         Stores the walls, pacman's starting position and corners.
         """
+        self.visited = []
         self.walls = startingGameState.getWalls()
         self.startingPosition = startingGameState.getPacmanPosition()
         top, right = self.walls.height-2, self.walls.width-2
@@ -303,9 +304,19 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        return state in self.corners
-
-
+        # self.visited.append(state)
+        if state in self.corners:
+            self.visited.append(state)
+        if all( x in self.visited for x in self.corners):
+            print "GOAL"
+            print self.visited
+            print self.corners
+            return True
+        else:
+            return False
+        # print "visited",self.visited
+        # print "corners",self.corners
+        # return state in self.corners
         #util.raiseNotDefined()
 
     def getSuccessors(self, state):
