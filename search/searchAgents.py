@@ -263,7 +263,7 @@ def euclideanHeuristic(position, problem, info={}):
     return ( (xy1[0] - xy2[0]) ** 2 + (xy1[1] - xy2[1]) ** 2 ) ** 0.5
 
 #####################################################
-# This portion is incomplete.  Time to write code!  #
+# This portion is incomplete.  Time to write code!  #--================================================================
 #####################################################
 
 class CornersProblem(search.SearchProblem):
@@ -290,33 +290,28 @@ class CornersProblem(search.SearchProblem):
         # in initializing the problem
         "*** YOUR CODE HERE ***"
 
+
     def getStartState(self):
         """
         Returns the start state (in your state space, not the full Pacman state
         space)
         """
         "*** YOUR CODE HERE ***"
-        return self.startingPosition
-        # util.raiseNotDefined()
+        #Initialize each corner as not visited.
+        # self.cornerStatus = {}
+        # for corner in self.corners:
+        #     self.cornerStatus[corner] = 0
+        return (self.startingPosition, (0,0,0,0))
+        #util.raiseNotDefined()
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        # self.visited.append(state)
-        if state in self.corners:
-            self.visited.append(state)
-        if all( x in self.visited for x in self.corners):
-            print "GOAL"
-            print self.visited
-            print self.corners
-            return True
-        else:
-            return False
-        # print "visited",self.visited
-        # print "corners",self.corners
-        # return state in self.corners
+        #If the state is a corner, add it to the visited corner list.
+        position, cornerStates = state
+        return position in self.corners and all(val==1 for val in cornerStates)
         #util.raiseNotDefined()
 
     def getSuccessors(self, state):
@@ -339,11 +334,24 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-            x,y = state
+            position, cornerStates = state
+            x,y = position
+            c1,c2,c3,c4 = cornerStates
+            for idx, corner in enumerate(self.corners):
+                if position == corner:
+                    if idx == 0:
+                        c1 = 1
+                    elif idx == 1:
+                        c2 = 1
+                    elif idx == 2:
+                        c3 = 1
+                    elif idx == 3:
+                        c4 = 1
+
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             if not self.walls[nextx][nexty]:
-                nextState = (nextx, nexty)
+                nextState = ((nextx, nexty), (c1,c2,c3,c4))
                 cost = 1
                 successors.append( ( nextState, action, cost) )
 

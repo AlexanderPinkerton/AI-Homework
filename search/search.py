@@ -120,8 +120,8 @@ def depthFirstSearch(problem):
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-
     start = problem.getStartState()
+    print "Start State: ", start
     frontier = util.Queue()
     visited = {}
     path = util.Queue()
