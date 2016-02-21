@@ -298,10 +298,8 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         #Initialize each corner as not visited.
-        # self.cornerStatus = {}
-        # for corner in self.corners:
-        #     self.cornerStatus[corner] = 0
-        return (self.startingPosition, (0,0,0,0))
+        #return (self.startingPosition, (0,0,0,0))
+        return (self.startingPosition, (((self.corners[0],0),(self.corners[1],0),(self.corners[2],0),(self.corners[3],0))))
         #util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -371,6 +369,11 @@ class CornersProblem(search.SearchProblem):
             if self.walls[x][y]: return 999999
         return len(actions)
 
+def manhattanDistance(pos1, pos2):
+    xy1 = pos1[0]
+    xy2 = pos2
+    return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+
 
 def cornersHeuristic(state, problem):
     """
@@ -387,9 +390,16 @@ def cornersHeuristic(state, problem):
     """
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+    cornerDistance = 999999
+    for corner in corners:
+        if manhattanDistance(state,corner) < cornerDistance:
+            cornerDistance = manhattanDistance(state,corner)
+    return cornerDistance
+
+
+
+    #return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -483,7 +493,19 @@ def foodHeuristic(state, problem):
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
-    return 0
+    foodlist = foodGrid.asList()
+    distance = 0
+    for food in foodlist:
+            distance += foodDistance(position,food)
+    return distance
+    #return 0
+
+def foodDistance(pos1, pos2):
+    "The Manhattan distance heuristic for a PositionSearchProblem"
+    xy1 = pos1
+    xy2 = pos2
+    return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+    #return ( (xy1[0] - xy2[0]) ** 2 + (xy1[1] - xy2[1]) ** 2 ) ** 0.5
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
