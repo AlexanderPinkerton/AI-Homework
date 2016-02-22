@@ -88,95 +88,134 @@ def depthFirstSearch(problem):
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
     "*** YOUR CODE HERE ***"
-
-    start = problem.getStartState()
+    visited = []
     frontier = util.Stack()
-    visited = {}
-    path = util.Queue()
-
-    frontier.push(start)
-    visited[start]= "", ""
+    frontier.push((problem.getStartState(),[]))
     while not frontier.isEmpty():
-        currentNode = frontier.pop()
-        if problem.isGoalState(currentNode):
-            break
-        for state, direction, cost in problem.getSuccessors(currentNode):
-            if state not in visited:
-                #key is state, value is parent
-                visited[state] = currentNode, direction
-                frontier.push(state)
-            else:
-                #if child is a successor to current update path
-                if state in frontier.list:
-                    visited[state] = currentNode, direction
-
-    while currentNode != problem.getStartState():
-        currentNode, direction = visited[currentNode]
-        path.push(direction)
-    return path.list
+        current, path = frontier.pop()
+        if current not in visited:
+            visited.append(current)
+            if problem.isGoalState(current):
+                return path
+            for state, direction, cost in problem.getSuccessors(current):
+                if state not in visited:
+                    updatePath = path + [direction]
+                    frontier.push((state, updatePath))
+    # start = problem.getStartState()
+    # frontier = util.Stack()
+    # visited = {}
+    # path = util.Queue()
+    #
+    # frontier.push(start)
+    # visited[start]= "", ""
+    # while not frontier.isEmpty():
+    #     currentNode = frontier.pop()
+    #     if problem.isGoalState(currentNode):
+    #         break
+    #     for state, direction, cost in problem.getSuccessors(currentNode):
+    #         if state not in visited:
+    #             #key is state, value is parent
+    #             visited[state] = currentNode, direction
+    #             frontier.push(state)
+    #         else:
+    #             #if child is a successor to current update path
+    #             if state in frontier.list:
+    #                 visited[state] = currentNode, direction
+    #
+    # while currentNode != problem.getStartState():
+    #     currentNode, direction = visited[currentNode]
+    #     path.push(direction)
+    # return path.list
 
     #util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
-    start = problem.getStartState()
-    print "Start State: ", start
+    visited = []
     frontier = util.Queue()
-    visited = {}
-    path = util.Queue()
-
-    frontier.push(start)
-    visited[start]= "", ""
+    frontier.push((problem.getStartState(),[]))
     while not frontier.isEmpty():
-        currentNode = frontier.pop()
-        if problem.isGoalState(currentNode):
-            break
-        for state, direction, cost in problem.getSuccessors(currentNode):
-            if state not in visited:
-                #key is state, value is parent
-                visited[state] = currentNode, direction
-                frontier.push(state)
-
-
-    while currentNode != problem.getStartState():
-        currentNode, direction = visited[currentNode]
-        path.push(direction)
-    return path.list
+        current, path = frontier.pop()
+        if current not in visited:
+            visited.append(current)
+            if problem.isGoalState(current):
+                return path
+            for state, direction, cost in problem.getSuccessors(current):
+                if state not in visited:
+                    updatePath = path + [direction]
+                    frontier.push((state, updatePath))
+    # start = problem.getStartState()
+    # print "Start State: ", start
+    # frontier = util.Queue()
+    # visited = {}
+    # path = util.Queue()
+    #
+    # frontier.push(start)
+    # visited[start]= "", ""
+    # while not frontier.isEmpty():
+    #     currentNode = frontier.pop()
+    #     if problem.isGoalState(currentNode):
+    #         break
+    #     for state, direction, cost in problem.getSuccessors(currentNode):
+    #         if state not in visited:
+    #             #key is state, value is parent
+    #             visited[state] = currentNode, direction
+    #             frontier.push(state)
+    #
+    #
+    # while currentNode != problem.getStartState():
+    #     currentNode, direction = visited[currentNode]
+    #     path.push(direction)
+    # return path.list
 
     #util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    start = problem.getStartState()
+    visited = []
     frontier = util.PriorityQueue()
-    visited = {}
-    path = util.Queue()
-
-    frontier.push((start, 0), 0)
-    visited[start]= "", "", ""
+    frontier.push((problem.getStartState(),[]),0)
     while not frontier.isEmpty():
-        currentNode, addCost = frontier.pop()
-        if problem.isGoalState(currentNode):
-            break
-        for state, direction, cost in problem.getSuccessors(currentNode):
-            if state not in visited:
-                #key is state, value is parent, cost is total cost found so far
-                visited[state] = currentNode, direction, cost + addCost
-                #Add the successor to the queue with cost being total so far
-                #Need to add twice due to how the priorityQ was implemented.
-                frontier.push((state, cost + addCost), cost + addCost)
-            else:
-                #If a successor has already been visited, check if the new route would have a lesser cost.
-                if visited[state][2] > cost + addCost:
-                    #If lesser cost route, update the connection.
-                    visited[state] = currentNode, direction, cost + addCost
+        current, path = frontier.pop()
+        if current not in visited:
+            visited.append(current)
+            if problem.isGoalState(current):
+                return path
+            for state, direction, cost in problem.getSuccessors(current):
+                if state not in visited:
+                    updatePath = path + [direction]
+                    frontier.push((state, updatePath), problem.getCostOfActions(updatePath))
 
-    while currentNode != problem.getStartState():
-        currentNode, direction, cost = visited[currentNode]
-        path.push(direction)
-    return path.list
+    # start = problem.getStartState()
+    # frontier = util.PriorityQueue()
+    # visited = {}
+    # path = util.Queue()
+    #
+    # frontier.push((start, 0), 0)
+    # visited[start]= "", "", ""
+    # while not frontier.isEmpty():
+    #     currentNode, addCost = frontier.pop()
+    #     if problem.isGoalState(currentNode):
+    #         break
+    #     for state, direction, cost in problem.getSuccessors(currentNode):
+    #         if state not in visited:
+    #             #key is state, value is parent, cost is total cost found so far
+    #             visited[state] = currentNode, direction, cost + addCost
+    #             #Add the successor to the queue with cost being total so far
+    #             #Need to add twice due to how the priorityQ was implemented.
+    #             frontier.push((state, cost + addCost), cost + addCost)
+    #         else:
+    #             #If a successor has already been visited, check if the new route would have a lesser cost.
+    #             if visited[state][2] > cost + addCost:
+    #                 #If lesser cost route, update the connection.
+    #                 visited[state] = currentNode, direction, cost + addCost
+    #
+    # while currentNode != problem.getStartState():
+    #     currentNode, direction, cost = visited[currentNode]
+    #     path.push(direction)
+    # return path.list
 
     #util.raiseNotDefined()
 

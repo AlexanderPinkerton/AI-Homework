@@ -370,9 +370,10 @@ class CornersProblem(search.SearchProblem):
         return len(actions)
 
 def manhattanDistance(pos1, pos2):
-    xy1 = pos1[0]
+    xy1 = pos1
     xy2 = pos2
     return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+    #return ( (xy1[0] - xy2[0]) ** 2 + (xy1[1] - xy2[1]) ** 2 ) ** 0.5
 
 
 def cornersHeuristic(state, problem):
@@ -391,24 +392,86 @@ def cornersHeuristic(state, problem):
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
     "*** YOUR CODE HERE ***"
+    position, cornerStatus = state
+    cornersLeft = []
+    distance = 0
+    #find corners that have not been visited yet
+    for c in cornerStatus:
+        if c != 1:
+            cornersLeft.append(c[0])
+
+    for c in cornersLeft:
+        distance += manhattanDistance(position, c)
+    #
+    # if len(cornersLeft) == 0:
+    #     return 0
+
     cornerDistance = 999999
-    theRest = 0
-    for corner in corners:
-        manDis = manhattanDistance(state,corner);
+    for corner in cornersLeft:
+        manDis = manhattanDistance(position,corner)
         if manDis < cornerDistance:
-            cornerDistance = manDis
-        else:
-            theRest += manDis
-    return cornerDistance + theRest
-    # cornerDistance = 999999
-    # for corner in corners:
-    #     if manhattanDistance(state,corner) < cornerDistance:
-    #         cornerDistance = manhattanDistance(state,corner)
-    # return cornerDistance
+            distance = manDis
+
+
+    # walls = 0
+    # for c in cornersLeft:
+    #     walls += countWallsBetween(position,c,problem)
+
+
+    # distance = 99999999999
+    # for permutation in all_perms(problem.corners):
+    #     c1,c2,c3,c4 = permutation
+    #     totalDistance = manhattanDistance(c1,c2) + manhattanDistance(c2,c3) + manhattanDistance(c3,c4)
+    #     if totalDistance < distance:
+    #         distance = totalDistance
 
 
 
-    #return 0 # Default to trivial solution
+
+    return distance # Default to trivial solution
+
+def countWallsBetween(point1,point2,problem):
+    wallcount = 0
+    current = point2
+    x1,y1 = point1
+    x2,y2 = point2
+    if x1 < current[0]:
+        while x1!=current[0]:
+            current = (current[0]-1,current[1])
+            if current in problem.walls.asList():
+                #print "wall found"
+                wallcount+=1
+    elif x1 > current[0]:
+        while x1!=current[0]:
+            current = (current[0]+1,current[1])
+            if current in problem.walls.asList():
+                #print "wall found"
+                wallcount+=1
+    if y1 < current[1]:
+        while y1!=current[1]:
+            current = (current[0],current[1]-1)
+            if current in problem.walls.asList():
+                #print "wall found"
+                wallcount+=1
+    elif y1 > current[1]:
+        while y1!=current[1]:
+            current = (current[0],current[1]+1)
+            if current in problem.walls.asList():
+                #print "wall found"
+                wallcount+=1
+
+    return wallcount
+
+
+
+def all_perms(elements):
+    if len(elements) <=1:
+        yield elements
+    else:
+        for perm in all_perms(elements[1:]):
+            for i in range(len(elements)):
+                # nb elements[0:1] works in both string and list contexts
+                yield perm[:i] + elements[0:1] + perm[i:]
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -504,10 +567,11 @@ def foodHeuristic(state, problem):
     "*** YOUR CODE HERE ***"
     foodlist = foodGrid.asList()
     distance = 0
+
     for food in foodlist:
-            distance += foodDistance(position,food)
+        distance += foodDistance(position,food)
+
     return distance
-    #return 0
 
 def foodDistance(pos1, pos2):
     "The Manhattan distance heuristic for a PositionSearchProblem"
