@@ -190,36 +190,52 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-
-    start = problem.getStartState()
+    visited = []
     frontier = util.PriorityQueue()
-    visited = {}
-    path = util.Queue()
-
-    frontier.push((start, 0), 0)
-    visited[start]= "", "", ""
+    frontier.push((problem.getStartState(),[]),0)
     while not frontier.isEmpty():
-        currentNode, addCost = frontier.pop()
-        if problem.isGoalState(currentNode):
-            break
-        for state, direction, cost in problem.getSuccessors(currentNode):
-            newcost = cost + addCost + heuristic(state,problem)
-            if state not in visited:
-                #key is state, value is parent, cost is total cost found so far
-                visited[state] = currentNode, direction, newcost
-                #Add the successor to the queue with cost being total so far
-                #Need to add twice due to how the priorityQ was implemented.
-                frontier.push((state, cost + addCost), newcost)
-            else:
-                #If a successor has already been visited, check if the new route would have a lesser cost.
-                if visited[state][2] > newcost:
-                    #If lesser cost route, update the connection.   This needs to be reflected in frontier properly.
-                    visited[state] = currentNode, direction, newcost
+        current, path = frontier.pop()
+        if current not in visited:
+            visited.append(current)
+            if problem.isGoalState(current):
+                return path
+            for state, direction, cost in problem.getSuccessors(current):
+                if state not in visited:
+                    updatePath = path + [direction]
+                    frontier.push((state, updatePath), problem.getCostOfActions(updatePath) + heuristic(state, problem))
 
-    while currentNode != problem.getStartState():
-        currentNode, direction, cost = visited[currentNode]
-        path.push(direction)
-    return path.list
+
+
+    # start = problem.getStartState()
+    # frontier = util.PriorityQueue()
+    # visited = {}
+    # path = util.Queue()
+    #
+    # frontier.push((start, 0), 0)
+    # visited[start]= "", "", ""
+    # while not frontier.isEmpty():
+    #     currentNode, addCost = frontier.pop()
+    #     #print "-------TOP:",currentNode
+    #     if problem.isGoalState(currentNode):
+    #         break
+    #     for state, direction, cost in problem.getSuccessors(currentNode):
+    #         newcost = cost + addCost + heuristic(state,problem)
+    #         if state not in visited:
+    #             #key is state, value is parent, cost is total cost found so far
+    #             visited[state] = currentNode, direction, newcost
+    #             #Add the successor to the queue with cost being total so far
+    #             #Need to add twice due to how the priorityQ was implemented.
+    #             frontier.push((state, cost + addCost), newcost)
+    #         else:
+    #             #If a successor has already been visited, check if the new route would have a lesser cost.
+    #             if visited[state][2] > newcost:
+    #                 #If lesser cost route, update the connection.   This needs to be reflected in frontier properly.
+    #                 visited[state] = currentNode, direction, newcost
+    #     #print frontier.heap
+    # while currentNode != problem.getStartState():
+    #     currentNode, direction, cost = visited[currentNode]
+    #     path.push(direction)
+    # return path.list
 
     # start = problem.getStartState()
     # frontier = util.PriorityQueue()
@@ -243,7 +259,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     # return path.list
 
 
-    util.raiseNotDefined()
+    #util.raiseNotDefined()
 
 
 # Abbreviations
