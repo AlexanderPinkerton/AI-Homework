@@ -89,18 +89,28 @@ def depthFirstSearch(problem):
     """
     "*** YOUR CODE HERE ***"
     visited = []
+    #Astar uses PriorityQueue as its modified UCS/Djikstra
     frontier = util.Stack()
+    #Push start with empty path and cost
     frontier.push((problem.getStartState(),[]))
     while not frontier.isEmpty():
+        #Get top out of frontier
         current, path = frontier.pop()
+        #If top never visited, check goal and get successors.
         if current not in visited:
             visited.append(current)
+            #If Goal, return list of actions
             if problem.isGoalState(current):
                 return path
             for state, direction, cost in problem.getSuccessors(current):
                 if state not in visited:
+                    #Access path thus far and append the successor direction.
                     updatePath = path + [direction]
+                    #Push successor and updated path onto frontier
+                    #Cost is cost of path + heuristic
                     frontier.push((state, updatePath))
+
+
     # start = problem.getStartState()
     # frontier = util.Stack()
     # visited = {}
@@ -133,17 +143,25 @@ def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     visited = []
+    #Astar uses PriorityQueue as its modified UCS/Djikstra
     frontier = util.Queue()
+    #Push start with empty path and cost
     frontier.push((problem.getStartState(),[]))
     while not frontier.isEmpty():
+        #Get top out of frontier
         current, path = frontier.pop()
+        #If top never visited, check goal and get successors.
         if current not in visited:
             visited.append(current)
+            #If Goal, return list of actions
             if problem.isGoalState(current):
                 return path
             for state, direction, cost in problem.getSuccessors(current):
                 if state not in visited:
+                    #Access path thus far and append the successor direction.
                     updatePath = path + [direction]
+                    #Push successor and updated path onto frontier
+                    #Cost is cost of path + heuristic
                     frontier.push((state, updatePath))
     # start = problem.getStartState()
     # print "Start State: ", start
@@ -175,17 +193,25 @@ def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
     visited = []
+    #Astar uses PriorityQueue as its modified UCS/Djikstra
     frontier = util.PriorityQueue()
+    #Push start with empty path and cost
     frontier.push((problem.getStartState(),[]),0)
     while not frontier.isEmpty():
+        #Get top out of frontier
         current, path = frontier.pop()
+        #If top never visited, check goal and get successors.
         if current not in visited:
             visited.append(current)
+            #If Goal, return list of actions
             if problem.isGoalState(current):
                 return path
             for state, direction, cost in problem.getSuccessors(current):
                 if state not in visited:
+                    #Access path thus far and append the successor direction.
                     updatePath = path + [direction]
+                    #Push successor and updated path onto frontier
+                    #Cost is cost of path + heuristic
                     frontier.push((state, updatePath), problem.getCostOfActions(updatePath))
 
     # start = problem.getStartState()
@@ -230,17 +256,25 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     visited = []
+    #Astar uses PriorityQueue as its modified UCS/Djikstra
     frontier = util.PriorityQueue()
+    #Push start with empty path and cost
     frontier.push((problem.getStartState(),[]),0)
     while not frontier.isEmpty():
+        #Get top out of frontier
         current, path = frontier.pop()
+        #If top never visited, check goal and get successors.
         if current not in visited:
             visited.append(current)
+            #If Goal, return list of actions
             if problem.isGoalState(current):
                 return path
             for state, direction, cost in problem.getSuccessors(current):
                 if state not in visited:
+                    #Access path thus far and append the successor direction.
                     updatePath = path + [direction]
+                    #Push successor and updated path onto frontier
+                    #Cost is cost of path + heuristic
                     frontier.push((state, updatePath), problem.getCostOfActions(updatePath) + heuristic(state, problem))
 
 
